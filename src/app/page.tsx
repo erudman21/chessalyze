@@ -1,15 +1,6 @@
-import Board from "./ui/Board";
-import { ChessComStats } from "./ui/ChessComStats";
+import { ReactNode } from "react";
+import RightHomePage from "../components/ui/RightHomePage";
 
-export default function Home() {
-  return (
-    <main className="flex">
-      <div className="flex-1">
-        <Board />
-      </div>
-      <div className="flex-1">
-        <ChessComStats />
-      </div>
-    </main>
-  );
+export default function Home({ children }: { children: ReactNode }) {
+  return <RightHomePage />;
 }

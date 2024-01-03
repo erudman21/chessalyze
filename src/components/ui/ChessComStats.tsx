@@ -1,5 +1,5 @@
 import { fakeGames } from "../../../fakeGame";
-import { getGamesForPlayer_CHESSCOM } from "../lib/chesscomApi";
+import { getGamesForPlayer_CHESSCOM } from "../../app/lib/actions";
 
 export async function ChessComStats() {
   // const games = await getGamesForPlayer_CHESSCOM("namdur21", 2023, 12);
@@ -13,7 +13,7 @@ export async function ChessComStats() {
   const currGame = games[gameIndex];
 
   return (
-    <div className="rounded-xl bg-gray-500 p-2 shadow-sm">
+    <div className="rounded-xl p-2 shadow-sm">
       <div className="flex p-4">
         <h3 className="ml-2 text-sm font-medium">{currGame.url}</h3>
       </div>

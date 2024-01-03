@@ -29,8 +29,13 @@ export default function Board() {
   };
 
   return (
-    <div className="ml-20 mt-20">
-      <Chessboard boardWidth={800} position={position} onPieceDrop={onDrop} />
-    </div>
+    <>
+      <Chessboard
+        boardWidth={800}
+        position={position}
+        onPieceDrop={onDrop}
+        customBoardStyle={{ margin: "0 auto", transform: "translateY(9%)" }}
+      />
+    </>
   );
 }
