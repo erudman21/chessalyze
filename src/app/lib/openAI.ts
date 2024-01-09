@@ -1,7 +1,7 @@
 "use server";
 
-import { OpenAI } from "openai";
 import { cookies } from "next/headers";
+import { openai } from "./openAiClient";
 
 const ASSISTANT_ID = "asst_wnMcA7MCKin1eqReYnbX41YH";
 
@@ -10,7 +10,6 @@ export async function getOpenAIResponse(
   userInput: string,
   sfEval: number | undefined
 ) {
-  const openai = new OpenAI({ apiKey: process.env.OPENAI_KEY });
   const assistant = await openai.beta.assistants.retrieve(ASSISTANT_ID);
   const thread = cookies().get("thread");
 
