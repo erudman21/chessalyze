@@ -1,10 +1,10 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { OpenAI } from "openai";
 import { cache } from "react";
 import { EvaluateSearchParams } from "../evaluate/page";
-import { OpenAI } from "openai";
-import { cookies } from "next/headers";
 
 export type ChessCOMResponseObject = {
   url: string;
