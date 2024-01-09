@@ -29,7 +29,6 @@ export default function BoardStateWrapper({
 }) {
   const game = useMemo(() => new Chess(), []);
   const [boardState, setBoardState] = useState("start");
-  // const engine = useMemo(() => new Engine(15), []);
 
   return (
     <BoardContext.Provider value={{ game, boardState, setBoardState }}>

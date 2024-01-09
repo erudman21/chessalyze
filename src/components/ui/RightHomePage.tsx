@@ -1,21 +1,15 @@
 "use client";
 
-import { Label } from "./shadcn/ui/label";
-import { cn } from "../../lib/utils";
-import { Input } from "./shadcn/ui/input";
-import { useState } from "react";
-import { Button } from "./shadcn/ui/button";
-import { Icons } from "./shadcn/ui/icons";
-import { getPlayerInfo_CHESSCOM } from "../../app/lib/actions";
-import { useFormState } from "react-dom";
 import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
+import { useFormState } from "react-dom";
+import { prepareEvaluate } from "../../app/lib/actions";
+import { cn } from "../../lib/utils";
+import { Button } from "./shadcn/ui/button";
+import { Input } from "./shadcn/ui/input";
+import { Label } from "./shadcn/ui/label";
 
 export default function RightHomePage() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errorMessage, dispatch] = useFormState(
-    getPlayerInfo_CHESSCOM,
-    undefined
-  );
+  const [errorMessage, dispatch] = useFormState(prepareEvaluate, undefined);
 
   return (
     <>
@@ -45,7 +39,6 @@ export default function RightHomePage() {
                       placeholder="MagnusCarlsen"
                       autoCapitalize="none"
                       autoCorrect="off"
-                      disabled={isLoading}
                     />
                     <div
                       className="flex items-end space-x-1"
@@ -60,12 +53,7 @@ export default function RightHomePage() {
                       )}
                     </div>
                   </div>
-                  <Button>
-                    {isLoading && (
-                      <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                    )}
-                    Evaluate
-                  </Button>
+                  <Button>Evaluate</Button>
                 </div>
               </form>
               <div className="relative">
@@ -78,10 +66,7 @@ export default function RightHomePage() {
                   </span>
                 </div>
               </div>
-              <Button variant="outline" type="button" disabled={isLoading}>
-                {isLoading && (
-                  <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                )}
+              <Button variant="outline" type="button">
                 Randomize
               </Button>
             </div>

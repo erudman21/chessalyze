@@ -2,6 +2,9 @@
 
 import { redirect } from "next/navigation";
 import { cache } from "react";
+import { EvaluateSearchParams } from "../evaluate/page";
+import { OpenAI } from "openai";
+import { cookies } from "next/headers";
 
 export type ChessCOMResponseObject = {
   url: string;
@@ -28,24 +31,25 @@ export type ChessCOMUserObject = {
 };
 
 export const getGamesForPlayer_CHESSCOM = cache(
-  async (url: string): Promise<[ChessCOMResponseObject] | undefined> => {
+  async ({
+    user,
+    month,
+    year,
+  }: EvaluateSearchParams): Promise<[ChessCOMResponseObject] | undefined> => {
     try {
-      const res = await fetch(url);
-      const data = await res.json();
-
-      return data.games;
+      return fetch(
+        `https://api.chess.com/pub/player/${user}/games/${year}/${month}`
+      )
+        .then((res) => res.json())
+        .then((data) => data.games);
     } catch (e) {
       console.log(e);
     }
   }
 );
 
-export async function getPlayerInfo_CHESSCOM(
-  prevState: string | undefined,
-  formData: FormData
-) {
+export async function getPlayerInfo_CHESSCOM(username: string) {
   try {
-    const username = String(formData.get("username"));
     const res = await fetch(
       `https://api.chess.com/pub/player/${username}/games/archives`
     );
@@ -57,11 +61,22 @@ export async function getPlayerInfo_CHESSCOM(
 
     const availableUrls: string[] = data.archives;
     const url = availableUrls[Math.floor(Math.random() * availableUrls.length)];
-    const games = await getGamesForPlayer_CHESSCOM(url);
-    const gameToEvaluate = games![Math.floor(Math.random() * games!.length)];
+    const matcher =
+      /https:\/\/api.chess.com\/pub\/player\/(\w+)\/games\/(\d{4})\/(\d{2})/;
+    const [, name, year, month] = url.match(matcher) ?? [];
+    redirect(`/evaluate?user=${name}&month=${month}&year=${year}`);
   } catch (e) {
-    return "User does not exist or hasn't played any games";
+    throw e;
   }
+}
 
-  redirect("/evaluate");
+export async function prepareEvaluate(
+  prevState: string | undefined,
+  formData: FormData
+) {
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_KEY });
+  const thread = await openai.beta.threads.create();
+  cookies().set("thread", thread.id);
+
+  return getPlayerInfo_CHESSCOM(String(formData.get("username")));
 }
