@@ -1,14 +1,14 @@
 "use client";
 
 import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
-import { getSingleGame_CHESSCOM } from "./lib/actions";
-import { cn } from "../lib/utils";
-import { Label } from "../components/ui/shadcn/ui/label";
-import { Input } from "../components/ui/shadcn/ui/input";
-import { Button } from "../components/ui/shadcn/ui/button";
-import { useContext, useState } from "react";
-import { BoardContext } from "./board-provider";
 import { useRouter } from "next/navigation";
+import { useContext, useState } from "react";
+import { Button } from "../components/ui/shadcn/ui/button";
+import { Input } from "../components/ui/shadcn/ui/input";
+import { Label } from "../components/ui/shadcn/ui/label";
+import { cn } from "../lib/utils";
+import { BoardContext } from "./board-provider";
+import { prepareEvaluate } from "./lib/actions";
 
 export default function Home() {
   const [error, setError] = useState("");
@@ -16,8 +16,7 @@ export default function Home() {
   const router = useRouter();
 
   const handleSubmit = async (formData: FormData) => {
-    const username = String(formData.get("username"));
-    const { error, game: currGame } = await getSingleGame_CHESSCOM(username);
+    const { error, game: currGame } = await prepareEvaluate(formData);
 
     if (error) {
       setError(error);
@@ -56,6 +55,8 @@ export default function Home() {
                       placeholder="MagnusCarlsen"
                       autoCapitalize="none"
                       autoCorrect="off"
+                      autoFocus
+                      autoComplete="off"
                     />
                     <div
                       className="flex items-end space-x-1"

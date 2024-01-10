@@ -73,10 +73,7 @@ export async function getSingleGame_CHESSCOM(
   }
 }
 
-export async function prepareEvaluate(
-  prevState: string | undefined,
-  formData: FormData
-) {
+export async function prepareEvaluate(formData: FormData) {
   const thread = await openai.beta.threads.create();
   cookies().set("thread", thread.id);
 

@@ -32,6 +32,5 @@ export async function getOpenAIResponse(
 
   const messages: any = await openai.beta.threads.messages.list(thread.value);
 
-  console.log(messages.body.data[0].content[0].text.value);
   return messages.body.data[0].content[0].text.value;
 }

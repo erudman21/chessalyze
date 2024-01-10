@@ -7,6 +7,8 @@ import "./evaluate.css";
 import { Icons } from "../../components/ui/shadcn/ui/icons";
 import Engine, { StockfishResponse } from "../lib/engine";
 import { getOpenAIResponse } from "../lib/openAI";
+import { cn } from "../../lib/utils";
+import { Inter } from "next/font/google";
 
 export type EvaluateSearchParams = {
   user?: string;
@@ -14,12 +16,14 @@ export type EvaluateSearchParams = {
   year?: string;
 };
 
+const inter = Inter({ subsets: ["latin"] });
+
 export default function Page(searchParams: {
   searchParams: EvaluateSearchParams;
 }) {
   const { game, setBoardState } = useContext(BoardContext);
   const [userInput, setUserInput] = useState<string>("");
-  const [chat, setChat] = useState<string[]>([]);
+  const [chat, setChat] = useState<{ user: string; message: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const engine = useMemo(() => new Engine(15), []);
   const [evaluation, setEvaluation] = useState<number>();
@@ -56,21 +60,30 @@ export default function Page(searchParams: {
   const handleKeyPress = async (e: KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      setChat((prev) => [userInput, ...prev]);
+      setChat((prev) => [{ user: "You", message: userInput }, ...prev]);
       setUserInput("");
       setLoading(true);
       const resp = await getOpenAIResponse(game!.fen(), userInput, evaluation);
       setLoading(false);
-      setChat((prev) => [resp, ...prev]);
+      setChat((prev) => [{ user: "ChatGPT", message: resp }, ...prev]);
     }
   };
 
   return (
     <div className="flex flex-col h-[100vh]">
-      <div className="flex flex-col-reverse overflow-y-auto h-full mb-2 gap-2">
-        {chat.map((message, i) => (
-          <div className="fade-in-text flex flex-col leading-5" key={i}>
-            {message}
+      <div className="flex flex-col-reverse overflow-y-auto h-full mb-2">
+        {chat.map(({ user, message }, i) => (
+          <div className="mb-5 break-words" key={i}>
+            <div className="font-semibold text-lg">{user}</div>
+            <pre
+              className={cn(
+                `flex flex-col leading-5 text-muted-foreground whitespace-pre-wrap ${
+                  inter.className
+                } ${i == 0 ? "fade-in-text" : ""}`
+              )}
+            >
+              {message}
+            </pre>
           </div>
         ))}
       </div>

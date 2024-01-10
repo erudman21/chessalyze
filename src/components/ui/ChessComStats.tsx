@@ -2,7 +2,6 @@ import { fakeGames } from "../../../fakeGame";
 import { getGamesForPlayer_CHESSCOM } from "../../app/lib/actions";
 
 export async function ChessComStats() {
-  // const games = await getGamesForPlayer_CHESSCOM("namdur21", 2023, 12);
   const games = fakeGames;
 
   if (!games) {
