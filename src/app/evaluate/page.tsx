@@ -61,12 +61,12 @@ export default function Page(searchParams: {
   const handleKeyPress = async (e: KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      setChat((prev) => [...prev, userInput]);
+      setChat((prev) => [userInput, ...prev]);
       setUserInput("");
       setLoading(true);
       const resp = await getOpenAIResponse(game!.fen(), userInput, evaluation);
       setLoading(false);
-      setChat((prev) => [...prev, resp]);
+      setChat((prev) => [resp, ...prev]);
     }
   };
 
