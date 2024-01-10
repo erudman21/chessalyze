@@ -17,7 +17,7 @@ export type EvaluateSearchParams = {
 export default function Page(searchParams: {
   searchParams: EvaluateSearchParams;
 }) {
-  const { game, boardState, setBoardState } = useContext(BoardContext);
+  const { game, setBoardState } = useContext(BoardContext);
   const [userInput, setUserInput] = useState<string>("");
   const [chat, setChat] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -25,26 +25,21 @@ export default function Page(searchParams: {
   const [evaluation, setEvaluation] = useState<number>();
 
   useEffect(() => {
-    const { user, year, month } = searchParams.searchParams;
-    fetch(`https://api.chess.com/pub/player/${user}/games/${year}/${month}`)
-      .then((res) => res.json())
-      .then(({ games }) => {
-        const currGame = games[Math.floor(Math.random() * games.length)];
-        game?.loadPgn(currGame.pgn);
-        const movesArr = game?.getComments();
+    const movesArr = game?.getComments();
 
-        if (movesArr) {
-          const start = 10;
-          const end = movesArr.length - 10;
-          const currMove = movesArr.slice(start, end)[
-            Math.floor(Math.random() * (end - start))
-          ].fen;
-          game?.load(currMove);
-          setBoardState(currMove);
-          engine.evaluatePosition(game!.fen());
-        }
-      });
-  }, [searchParams, setBoardState, game, engine]);
+    if (movesArr) {
+      const start = 10;
+      const end = movesArr.length - 10;
+      const currMove = movesArr.slice(start, end)[
+        Math.floor(Math.random() * (end - start))
+      ];
+      if (currMove) {
+        game?.load(currMove.fen);
+        setBoardState(currMove.fen);
+        engine.evaluatePosition(game!.fen());
+      }
+    }
+  }, [game, engine, setBoardState]);
 
   engine!.onMessage(({ evaluation: sfEval }: StockfishResponse) => {
     if (game) {

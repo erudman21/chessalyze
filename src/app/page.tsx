@@ -1,15 +1,32 @@
 "use client";
 
 import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
-import { useFormState } from "react-dom";
-import { prepareEvaluate } from "./lib/actions";
+import { getSingleGame_CHESSCOM } from "./lib/actions";
 import { cn } from "../lib/utils";
 import { Label } from "../components/ui/shadcn/ui/label";
 import { Input } from "../components/ui/shadcn/ui/input";
 import { Button } from "../components/ui/shadcn/ui/button";
+import { useContext, useState } from "react";
+import { BoardContext } from "./board-provider";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const [errorMessage, dispatch] = useFormState(prepareEvaluate, undefined);
+  const [error, setError] = useState("");
+  const { game } = useContext(BoardContext);
+  const router = useRouter();
+
+  const handleSubmit = async (formData: FormData) => {
+    const username = String(formData.get("username"));
+    const { error, game: currGame } = await getSingleGame_CHESSCOM(username);
+
+    if (error) {
+      setError(error);
+      return;
+    }
+
+    game?.loadPgn(currGame?.pgn!);
+    router.push("/evaluate");
+  };
 
   return (
     <>
@@ -26,8 +43,8 @@ export default function Home() {
                 from a high-rated tournament
               </p>
             </div>
-            <div className={cn("grid gap-6")}>
-              <form action={dispatch}>
+            <form action={handleSubmit}>
+              <div className={cn("grid gap-6")}>
                 <div className="grid gap-2">
                   <div className="grid gap-1">
                     <Label className="sr-only" htmlFor="chesscomUsername">
@@ -45,31 +62,31 @@ export default function Home() {
                       aria-live="polite"
                       aria-atomic="true"
                     >
-                      {errorMessage && (
+                      {error && (
                         <>
                           <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-                          <p className="text-sm text-red-500">{errorMessage}</p>
+                          <p className="text-sm text-red-500">{error}</p>
                         </>
                       )}
                     </div>
                   </div>
                   <Button>Evaluate</Button>
                 </div>
-              </form>
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">
+                      Or
+                    </span>
+                  </div>
                 </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
-                    Or
-                  </span>
-                </div>
+                <Button variant="outline" type="button">
+                  Randomize
+                </Button>
               </div>
-              <Button variant="outline" type="button">
-                Randomize
-              </Button>
-            </div>
+            </form>
             <p className="px-8 text-center text-sm"></p>
           </div>
         </div>

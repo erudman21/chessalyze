@@ -1,10 +1,9 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { OpenAI } from "openai";
 import { cache } from "react";
 import { EvaluateSearchParams } from "../evaluate/page";
+import { openai } from "./openAiClient";
 
 export type ChessCOMResponseObject = {
   url: string;
@@ -48,25 +47,29 @@ export const getGamesForPlayer_CHESSCOM = cache(
   }
 );
 
-export async function getPlayerInfo_CHESSCOM(username: string) {
-  try {
-    const res = await fetch(
-      `https://api.chess.com/pub/player/${username}/games/archives`
-    );
-    const data = await res.json();
+export async function getSingleGame_CHESSCOM(
+  username: string
+): Promise<{ error?: string; game?: ChessCOMResponseObject }> {
+  const err = {
+    error: "User does not exist or hasn't played any games",
+  };
 
-    if (!data || !data.archives) {
-      return "User does not exist or hasn't played any games";
+  try {
+    const gameMonths = await fetch(
+      `https://api.chess.com/pub/player/${username}/games/archives`
+    ).then((res) => res.json());
+
+    if (!gameMonths || !gameMonths.archives) {
+      return err;
     }
 
-    const availableUrls: string[] = data.archives;
+    const availableUrls: string[] = gameMonths.archives;
     const url = availableUrls[Math.floor(Math.random() * availableUrls.length)];
-    const matcher =
-      /https:\/\/api.chess.com\/pub\/player\/(\w+)\/games\/(\d{4})\/(\d{2})/;
-    const [, name, year, month] = url.match(matcher) ?? [];
-    redirect(`/evaluate?user=${name}&month=${month}&year=${year}`);
+    const { games } = await fetch(url).then((res) => res.json());
+    const currGame = games[Math.floor(Math.random() * games.length)];
+    return { game: currGame };
   } catch (e) {
-    throw e;
+    return err;
   }
 }
 
@@ -74,9 +77,8 @@ export async function prepareEvaluate(
   prevState: string | undefined,
   formData: FormData
 ) {
-  const openai = new OpenAI({ apiKey: process.env.OPENAI_KEY });
   const thread = await openai.beta.threads.create();
   cookies().set("thread", thread.id);
 
-  return getPlayerInfo_CHESSCOM(String(formData.get("username")));
+  return getSingleGame_CHESSCOM(String(formData.get("username")));
 }

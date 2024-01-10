@@ -3,14 +3,14 @@
 import { cookies } from "next/headers";
 import { openai } from "./openAiClient";
 
-const ASSISTANT_ID = "asst_wnMcA7MCKin1eqReYnbX41YH";
-
 export async function getOpenAIResponse(
   gameFen: string,
   userInput: string,
   sfEval: number | undefined
 ) {
-  const assistant = await openai.beta.assistants.retrieve(ASSISTANT_ID);
+  const assistant = await openai.beta.assistants.retrieve(
+    process.env.ASSISTANT_ID!
+  );
   const thread = cookies().get("thread");
 
   if (!thread) {
