@@ -6,7 +6,8 @@ import { Piece, Square } from "react-chessboard/dist/chessboard/types";
 import { BoardContext } from "../../app/board-provider";
 
 export default function Board() {
-  const { game, boardState, setBoardState } = useContext(BoardContext);
+  const { game, boardState, setBoardState, boardOrientation } =
+    useContext(BoardContext);
 
   const onDrop = (sourceSquare: Square, targetSquare: Square, piece: Piece) => {
     if (!game) return false;
@@ -33,6 +34,7 @@ export default function Board() {
     <Chessboard
       boardWidth={800}
       position={boardState}
+      boardOrientation={boardOrientation as any}
       onPieceDrop={onDrop}
       customBoardStyle={{ margin: "0 auto", transform: "translateY(8.5%)" }}
     />

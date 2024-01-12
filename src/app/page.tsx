@@ -12,18 +12,19 @@ import { prepareEvaluate } from "./lib/actions";
 
 export default function Home() {
   const [error, setError] = useState("");
-  const { game } = useContext(BoardContext);
+  const { game, setBoardOrientation } = useContext(BoardContext);
   const router = useRouter();
 
   const handleSubmit = async (formData: FormData) => {
     const { error, game: currGame } = await prepareEvaluate(formData);
 
-    if (error) {
-      setError(error);
+    if (error || !game) {
+      setError(error || "Something went wrong fetching a game");
       return;
     }
 
-    game?.loadPgn(currGame?.pgn!);
+    game.loadPgn(currGame?.pgn!);
+    setBoardOrientation(game.turn() === "b" ? "black" : "white");
     router.push("/evaluate");
   };
 
