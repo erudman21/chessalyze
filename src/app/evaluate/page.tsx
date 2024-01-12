@@ -9,6 +9,8 @@ import Engine, { StockfishResponse } from "../lib/engine";
 import { getOpenAIResponse } from "../lib/openAI";
 import { cn } from "../../lib/utils";
 import { Inter } from "next/font/google";
+import EvaluateNavBar from "../../components/ui/EvaluateNavBar";
+import { ScrollArea } from "../../components/ui/shadcn/ui/scroll-area";
 
 export type EvaluateSearchParams = {
   user?: string;
@@ -21,7 +23,7 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Page(searchParams: {
   searchParams: EvaluateSearchParams;
 }) {
-  const { game, setBoardState } = useContext(BoardContext);
+  const { game, setBoardState, setBoardOrientation } = useContext(BoardContext);
   const [userInput, setUserInput] = useState<string>("");
   const [chat, setChat] = useState<{ user: string; message: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -70,38 +72,41 @@ export default function Page(searchParams: {
   };
 
   return (
-    <div className="flex flex-col h-[100vh]">
-      <div className="flex flex-col-reverse overflow-y-auto h-full mb-2">
-        {chat.map(({ user, message }, i) => (
-          <div className="mb-5 break-words" key={i}>
-            <div className="font-semibold text-lg">{user}</div>
-            <pre
-              className={cn(
-                `flex flex-col leading-5 text-muted-foreground whitespace-pre-wrap ${
-                  inter.className
-                } ${i == 0 ? "fade-in-text" : ""}`
-              )}
-            >
-              {message}
-            </pre>
-          </div>
-        ))}
+    <>
+      <EvaluateNavBar />
+      <div className="flex flex-col h-[100vh]">
+        <ScrollArea className="flex flex-col-reverse h-full mb-2">
+          {chat.map(({ user, message }, i) => (
+            <div className="mb-5 break-words" key={i}>
+              <div className="font-semibold text-lg">{user}</div>
+              <pre
+                className={cn(
+                  `flex flex-col leading-5 text-muted-foreground whitespace-pre-wrap ${
+                    inter.className
+                  } ${i == 0 ? "fade-in-text" : ""}`
+                )}
+              >
+                {message}
+              </pre>
+            </div>
+          ))}
+        </ScrollArea>
+        <div className="mt-auto mb-[15vh] relative">
+          <Textarea
+            id="evaluation"
+            placeholder="Give your evaluation for the position and the justification for the evaluation here..."
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            onKeyDown={handleKeyPress}
+            disabled={loading}
+          />
+          {loading ? (
+            <Icons.spinner className="animate-spin absolute top-[30%] left-[50%] w-8 h-8 flex justify-center items-center z-10"></Icons.spinner>
+          ) : (
+            ""
+          )}
+        </div>
       </div>
-      <div className="mt-auto mb-[15vh] relative">
-        <Textarea
-          id="evaluation"
-          placeholder="Give your evaluation for the position and the justification for the evaluation here..."
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          onKeyDown={handleKeyPress}
-          disabled={loading}
-        />
-        {loading ? (
-          <Icons.spinner className="animate-spin absolute top-[30%] left-[50%] w-8 h-8 flex justify-center items-center z-10"></Icons.spinner>
-        ) : (
-          ""
-        )}
-      </div>
-    </div>
+    </>
   );
 }
