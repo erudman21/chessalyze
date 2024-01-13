@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { cache } from "react";
 import { EvaluateSearchParams } from "../evaluate/page";
 import { openai } from "./openAiClient";
+import redis from "./redis";
 
 export type ChessCOMResponseObject = {
   url: string;
