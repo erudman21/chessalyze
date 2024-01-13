@@ -1,14 +1,14 @@
 "use client";
 
 import { useContext, useState } from "react";
-import { BoardContext } from "../../app/board-provider";
+import { BoardContext } from "./BoardProvider";
 import { useRouter } from "next/navigation";
-import { prepareEvaluate } from "../../app/lib/actions";
-import { Label } from "./shadcn/ui/label";
-import { Input } from "./shadcn/ui/input";
-import { cn } from "../../lib/utils";
+import { prepareEvaluate } from "../app/api/actions";
+import { Label } from "./ui/shadcn/ui/label";
+import { Input } from "./ui/shadcn/ui/input";
+import { cn } from "../lib/utils";
 import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
-import { Button } from "./shadcn/ui/button";
+import { Button } from "./ui/shadcn/ui/button";
 
 export default function HomePageForm() {
   const [error, setError] = useState("");

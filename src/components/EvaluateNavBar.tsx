@@ -1,4 +1,4 @@
-import { Button } from "./shadcn/ui/button";
+import { Button } from "./ui/shadcn/ui/button";
 
 export default function EvaluateNavBar() {
   return (

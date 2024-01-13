@@ -3,7 +3,7 @@
 import { useContext } from "react";
 import { Chessboard } from "react-chessboard";
 import { Piece, Square } from "react-chessboard/dist/chessboard/types";
-import { BoardContext } from "../../app/board-provider";
+import { BoardContext } from "./BoardProvider";
 
 export default function Board() {
   const { game, boardState, setBoardState, boardOrientation } =

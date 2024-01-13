@@ -1,5 +1,5 @@
-import { fakeGames } from "../../../fakeGame";
-import { getGamesForPlayer_CHESSCOM } from "../../app/lib/actions";
+import { fakeGames } from "../../fakeGame";
+import { getGamesForPlayer_CHESSCOM } from "../app/api/actions";
 
 export async function ChessComStats() {
   const games = fakeGames;
