@@ -1,25 +1,31 @@
-import HomePageForm from "../components/ui/HomePageForm";
+import Image from "next/image";
+import SignInButton from "../components/SignInButton";
 
 export default function Home() {
   return (
-    <>
-      <div className="md:hidden"></div>
-      <div className="container relative hidden h-[800px] flex-col items-center justify-center md:grid lg:max-w-none lg:px-0">
-        <div className="lg:p-8">
-          <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-            <div className="flex flex-col space-y-2 text-center">
-              <h1 className="text-2xl font-semibold tracking-tight">
-                Evaluate a position
+    <div className="container relative hidden h-[800px] flex-col items-center justify-center md:grid lg:max-w-none lg:px-0">
+      <div className="lg:p-8 ">
+        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+          <div className="flex flex-col text-center items-center">
+            <Image
+              src="/icon_transparent_white.png"
+              width={50}
+              height={50}
+              alt="site logo"
+              className="-mb-6 -mt-8"
+            />
+            <div className="flex flex-col gap-y-0.5">
+              <h1 className="text-3xl font-medium tracking-tight">
+                Chessalyze
               </h1>
               <p className="text-sm text-muted-foreground">
-                Either enter a Chess.com username below or get a random game
-                from a high-rated tournament
+                Test your chess positional evaluation skills
               </p>
             </div>
-            <HomePageForm />
+            <SignInButton className="w-full mt-8" />
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
