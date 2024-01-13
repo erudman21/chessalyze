@@ -9,7 +9,6 @@ import {
   useMemo,
   useState,
 } from "react";
-import { BoardOrientation } from "react-chessboard/dist/chessboard/types";
 
 export type BoardProviderType = {
   game: Chess | null;

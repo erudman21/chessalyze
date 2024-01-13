@@ -10,10 +10,7 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Game {
-    id Int @id
-}
-
 model User {
-    id String @id @default(uuid())
+    id    String @id @unique
+    email String @unique
 }
