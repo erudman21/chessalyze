@@ -9,7 +9,7 @@ export default function SignInButton({ ...props }) {
     <div {...props}>
       <Button
         className="text-background rounded-lg w-full overflow-hidden gap-x-2"
-        onClick={() => signIn()}
+        onClick={() => signIn("google", { callbackUrl: "/evaluate" })}
       >
         <GoogleIcon />
         Sign in with Google
