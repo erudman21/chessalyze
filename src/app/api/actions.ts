@@ -1,34 +1,11 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { cache } from "react";
-import { EvaluateSearchParams } from "../evaluate/page";
+import { EvaluateSearchParams } from "../evaluate-temp/page";
 import { openai } from "./openAiClient";
 import redis from "./redis";
-
-export type ChessCOMResponseObject = {
-  url: string;
-  pgn: string;
-  time_control: string;
-  end_time: number;
-  rated: boolean;
-  tcn: string;
-  uuid: string;
-  initial_setup: string;
-  fen: string;
-  time_class: string;
-  rules: string;
-  white: ChessCOMUserObject;
-  black: ChessCOMUserObject;
-};
-
-export type ChessCOMUserObject = {
-  rating: number;
-  result: string;
-  "@id": string;
-  username: string;
-  uuid: string;
-};
+import { getServerSession } from "next-auth";
+import { ChessCOMResponseObject, RedisUserResponse } from "./types";
 
 export const getGamesForPlayer_CHESSCOM = cache(
   async ({
@@ -43,7 +20,7 @@ export const getGamesForPlayer_CHESSCOM = cache(
         .then((res) => res.json())
         .then((data) => data.games);
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 );
@@ -76,7 +53,28 @@ export async function getSingleGame_CHESSCOM(
 
 export async function prepareEvaluate(formData: FormData) {
   const thread = await openai.beta.threads.create();
-  cookies().set("thread", thread.id);
+  const userSession = await getServerSession();
+
+  if (!userSession?.user?.email) {
+    return "User possibly not authenticated";
+  }
+
+  const { game, error } = await getSingleGame_CHESSCOM(
+    String(formData.get("username"))
+  );
+
+  if (error) {
+    return error;
+  }
+
+  await redis.hset(userSession.user.email, {
+    thread: thread.id,
+    game: JSON.stringify(game),
+  });
+
+  // const userGameInfo = await redis.hgetall(userSession.user.email);
+
+  // console.log(JSON.parse(userGameInfo.game));
 
   return getSingleGame_CHESSCOM(String(formData.get("username")));
 }
