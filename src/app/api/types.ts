@@ -22,4 +22,8 @@ export type ChessCOMUserObject = {
   uuid: string;
 };
 
-export type RedisUserResponse = Record<string, string>;
+export type RedisUserResponse = {
+  thread: string;
+  chessCOMGame: ChessCOMResponseObject;
+  game: { fen: string; turn: string };
+};
