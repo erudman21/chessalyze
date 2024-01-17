@@ -8,7 +8,7 @@ export default function Home() {
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
           <div className="flex flex-col text-center items-center">
             <Image
-              src="/icon_transparent_white.png"
+              src="/logo.png"
               width={50}
               height={50}
               alt="site logo"

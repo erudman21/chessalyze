@@ -10,6 +10,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Chessalyze",
   description: "Test your evaluation skills",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
@@ -21,7 +24,7 @@ export default function RootLayout({
     <html lang="en" className="overflow-hidden">
       <head></head>
       <body
-        className={`${inter.className} bg-background dark text-zinc-100 flex items-stretch`}
+        className={`${inter.className} bg-background dark text-foreground flex items-stretch`}
       >
         <AuthSessionProvider>
           <BoardProvider>
