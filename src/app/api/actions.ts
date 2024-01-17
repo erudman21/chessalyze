@@ -1,31 +1,14 @@
 "use server";
 
-import { cache } from "react";
-import { EvaluateSearchParams } from "../evaluate-temp/page";
 import { openai } from "./openAiClient";
-import redis from "./redis";
+import redis, { getRedisUserInfo } from "./redis";
 import { getServerSession } from "next-auth";
-import { ChessCOMResponseObject, RedisUserResponse } from "./types";
+import { ChessCOMResponseObject } from "./types";
+import { Chess } from "chess.js";
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
-export const getGamesForPlayer_CHESSCOM = cache(
-  async ({
-    user,
-    month,
-    year,
-  }: EvaluateSearchParams): Promise<[ChessCOMResponseObject] | undefined> => {
-    try {
-      return fetch(
-        `https://api.chess.com/pub/player/${user}/games/${year}/${month}`
-      )
-        .then((res) => res.json())
-        .then((data) => data.games);
-    } catch (e) {
-      console.error(e);
-    }
-  }
-);
-
-export async function getSingleGame_CHESSCOM(
+export async function setCHESSCOMGame(
   username: string
 ): Promise<{ error?: string; game?: ChessCOMResponseObject }> {
   const err = {
@@ -51,30 +34,56 @@ export async function getSingleGame_CHESSCOM(
   }
 }
 
+export async function getCurrUserInfo() {
+  const userSession = await getServerSession();
+
+  if (!userSession?.user?.email) {
+    throw Error("User possibly not authenticated");
+  }
+
+  return getRedisUserInfo(userSession.user.email);
+}
+
 export async function prepareEvaluate(formData: FormData) {
   const thread = await openai.beta.threads.create();
   const userSession = await getServerSession();
 
   if (!userSession?.user?.email) {
-    return "User possibly not authenticated";
+    throw Error("User possibly not authenticated");
   }
 
-  const { game, error } = await getSingleGame_CHESSCOM(
-    String(formData.get("username"))
-  );
+  const searchUsername = String(formData.get("username"));
+  const { game: chessCOMGame, error } = await setCHESSCOMGame(searchUsername);
 
-  if (error) {
-    return error;
+  if (error || !chessCOMGame) {
+    throw Error("Something went wrong fetching a game for the user provided");
+  }
+
+  const game = new Chess();
+  game.loadPgn(chessCOMGame.pgn);
+
+  const movesArr = game.getComments();
+  if (movesArr) {
+    const start = 10;
+    const end = movesArr.length - 10;
+    const currMove = movesArr.slice(start, end)[
+      Math.floor(Math.random() * (end - start))
+    ];
+    if (currMove) {
+      game.load(currMove.fen);
+    }
   }
 
   await redis.hset(userSession.user.email, {
     thread: thread.id,
-    game: JSON.stringify(game),
+    chessCOMGame: JSON.stringify(chessCOMGame),
+    game: JSON.stringify({
+      fen: game.fen(),
+      turn: game.turn(),
+    }),
   });
 
-  // const userGameInfo = await redis.hgetall(userSession.user.email);
-
-  // console.log(JSON.parse(userGameInfo.game));
-
-  return getSingleGame_CHESSCOM(String(formData.get("username")));
+  const path = `/evaluate?search=${encodeURIComponent(searchUsername)}`;
+  revalidatePath(path);
+  redirect(path);
 }
