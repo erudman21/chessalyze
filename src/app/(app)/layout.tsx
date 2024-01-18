@@ -25,18 +25,10 @@ export default async function RootLayout({
     <html lang="en">
       <head></head>
       <body
-        className={`${inter.className} bg-background dark text-foreground flex items-stretch h-screen flex-col`}
+        className={`${inter.className} bg-background dark text-foreground flex items-stretch h-screen flex-col overflow-y-hidden`}
       >
         <AuthSessionProvider>
-          <BoardProvider>
-            <NavBar />
-            <div className="flex flex-grow">
-              <div className="w-1/2">
-                <Board />
-              </div>
-              <div className="w-1/2 pr-8 py-8">{children}</div>
-            </div>
-          </BoardProvider>
+          <BoardProvider>{children}</BoardProvider>
         </AuthSessionProvider>
       </body>
     </html>

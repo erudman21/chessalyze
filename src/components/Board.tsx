@@ -36,7 +36,9 @@ export default function Board() {
       position={boardState}
       boardOrientation={boardOrientation as any}
       onPieceDrop={onDrop}
-      customBoardStyle={{ margin: "0 auto", transform: "translateY(8.5%)" }}
+      customBoardStyle={{
+        margin: "0 auto",
+      }}
     />
   );
 }

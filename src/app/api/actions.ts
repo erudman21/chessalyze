@@ -56,7 +56,7 @@ export async function prepareEvaluate(formData: FormData) {
   const { game: chessCOMGame, error } = await setCHESSCOMGame(searchUsername);
 
   if (error || !chessCOMGame) {
-    throw Error("Something went wrong fetching a game for the user provided");
+    return "User does not exist or has no games played";
   }
 
   const game = new Chess();
@@ -83,7 +83,7 @@ export async function prepareEvaluate(formData: FormData) {
     }),
   });
 
-  const path = `/evaluate?search=${encodeURIComponent(searchUsername)}`;
+  const path = `/evaluate/game?search=${encodeURIComponent(searchUsername)}`;
   revalidatePath(path);
   redirect(path);
 }

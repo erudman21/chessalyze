@@ -1,10 +1,21 @@
-import { Button } from "./ui/shadcn/ui/button";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./ui/shadcn/ui/accordion";
 
 export default function EvaluateNavBar() {
   return (
-    <div className="flex py-4">
-      <Button className="mr-auto">Reveal Game</Button>
-      <Button className="">Evaluate new game</Button>
+    <div className="absolute w-full">
+      <Accordion collapsible type="single">
+        <AccordionItem value="item-3">
+          <AccordionTrigger className="AccordionTrigger">
+            Click to reveal the game
+          </AccordionTrigger>
+          <AccordionContent className="bg-black">STUFF</AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 }
