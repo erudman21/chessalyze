@@ -1,3 +1,4 @@
+import ChessCOMGameInfo from "./ChessCOMGameInfo";
 import {
   Accordion,
   AccordionContent,
@@ -9,11 +10,13 @@ export default function EvaluateNavBar() {
   return (
     <div className="absolute w-full">
       <Accordion collapsible type="single">
-        <AccordionItem value="item-3">
-          <AccordionTrigger className="AccordionTrigger">
+        <AccordionItem value="item-3" className="relative z-[999]">
+          <AccordionTrigger className="AccordionTrigger pt-0">
             Click to reveal the game
           </AccordionTrigger>
-          <AccordionContent className="bg-black">STUFF</AccordionContent>
+          <AccordionContent className="bg-background">
+            <ChessCOMGameInfo />
+          </AccordionContent>
         </AccordionItem>
       </Accordion>
     </div>
