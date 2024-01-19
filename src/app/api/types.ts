@@ -1,6 +1,8 @@
 export type ChessCOMResponseObject = {
   url: string;
   pgn: string;
+  date: { year: number; month: number; day: number };
+  result: string;
   time_control: string;
   end_time: number;
   rated: boolean;

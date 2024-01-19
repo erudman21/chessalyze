@@ -7,6 +7,7 @@ import { ChessCOMResponseObject } from "./types";
 import { Chess } from "chess.js";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { parse } from "@mliebelt/pgn-parser";
 
 export async function setCHESSCOMGame(
   username: string
@@ -28,7 +29,11 @@ export async function setCHESSCOMGame(
     const url = availableUrls[Math.floor(Math.random() * availableUrls.length)];
     const { games } = await fetch(url).then((res) => res.json());
     const currGame = games[Math.floor(Math.random() * games.length)];
-    return { game: currGame };
+    const { tags } = parse(currGame.pgn, { startRule: "game" }) as any;
+    const { year, month, day } = tags.Date;
+    return {
+      game: { ...currGame, date: { year, month, day }, result: tags.Result },
+    };
   } catch (e) {
     return err;
   }
