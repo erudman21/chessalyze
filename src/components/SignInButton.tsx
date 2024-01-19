@@ -15,7 +15,7 @@ export default function SignInButton({ ...props }) {
         className="text-background rounded-lg w-full overflow-hidden gap-x-2"
         onClick={() => {
           setLoading(true);
-          signIn("google", { callbackUrl: "/evaluate" });
+          signIn("google", { callbackUrl: "/" });
         }}
       >
         {loading ? (

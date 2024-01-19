@@ -83,7 +83,7 @@ export async function prepareEvaluate(formData: FormData) {
     }),
   });
 
-  const path = `/evaluate/game?search=${encodeURIComponent(searchUsername)}`;
+  const path = `/evaluate?search=${encodeURIComponent(searchUsername)}`;
   revalidatePath(path);
   redirect(path);
 }

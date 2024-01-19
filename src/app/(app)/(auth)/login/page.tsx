@@ -1,5 +1,5 @@
-import LogoImage from "../../../components/LogoImage";
-import SignInButton from "../../../components/SignInButton";
+import LogoImage from "../../../../components/LogoImage";
+import SignInButton from "../../../../components/SignInButton";
 
 export default function Page() {
   return (

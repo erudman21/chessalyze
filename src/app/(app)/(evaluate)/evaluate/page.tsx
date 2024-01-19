@@ -6,11 +6,9 @@ import "./evaluate.css";
 export default async function Page() {
   const userInfo = await getCurrUserInfo();
   return (
-    <div className="pt-8 pr-16">
-      <div className="relative">
-        <EvaluateNavBar />
-        <Chat userInfo={userInfo} className="pt-[75px]" />
-      </div>
+    <div className="relative">
+      <EvaluateNavBar />
+      <Chat userInfo={userInfo} className="pt-[60px] h-[50rem]" />
     </div>
   );
 }

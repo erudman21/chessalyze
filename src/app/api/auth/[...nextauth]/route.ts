@@ -3,6 +3,11 @@ import GoogleProvider from "next-auth/providers/google";
 import prisma from "../../prisma";
 
 const handler = NextAuth({
+  pages: {
+    signIn: "/login",
+    error: "/login",
+    verifyRequest: "/login",
+  },
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
