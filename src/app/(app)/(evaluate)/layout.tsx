@@ -9,7 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="w-1/2">
           <Board />
         </div>
-        <div className="w-1/2 pr-16 pb-20">{children}</div>
+        <div className="w-1/2 pb-20">{children}</div>
       </div>
     </>
   );

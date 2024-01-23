@@ -31,14 +31,12 @@ export default function Board() {
   };
 
   return (
-    <Chessboard
-      boardWidth={800}
-      position={boardState}
-      boardOrientation={boardOrientation as any}
-      onPieceDrop={onDrop}
-      customBoardStyle={{
-        margin: "0 auto",
-      }}
-    />
+    <div className="px-8 w-[90vh] ml-auto">
+      <Chessboard
+        position={boardState}
+        boardOrientation={boardOrientation as any}
+        onPieceDrop={onDrop}
+      />
+    </div>
   );
 }
