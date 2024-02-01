@@ -7,7 +7,6 @@ import { Input } from "./ui/shadcn/ui/input";
 import { cn } from "../lib/utils";
 import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
 import { Button } from "./ui/shadcn/ui/button";
-import { useFormStatus } from "react-dom";
 
 export default function EvaluateForm() {
   const [error, setError] = useState("");
@@ -35,7 +34,7 @@ export default function EvaluateForm() {
               autoComplete="off"
             />
             <div
-              className="flex items-end space-x-1"
+              className="flex items-center space-x-1"
               aria-live="polite"
               aria-atomic="true"
             >

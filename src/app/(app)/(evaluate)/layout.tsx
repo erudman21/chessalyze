@@ -6,10 +6,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <>
       <NavBar />
       <div className="flex flex-grow">
-        <div className="w-1/2">
+        <div className="w-1/2 hidden md:block md:min-w-[600px]">
           <Board />
         </div>
-        <div className="w-1/2 pb-20">{children}</div>
+        <div className="flex flex-grow pb-20">{children}</div>
       </div>
     </>
   );
