@@ -31,7 +31,7 @@ export default function Board() {
   };
 
   return (
-    <div className="px-8 max-w-[90vh] ml-auto">
+    <div className="max-w-[90vh] ml-auto">
       <Chessboard
         position={boardState}
         boardOrientation={boardOrientation as any}

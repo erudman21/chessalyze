@@ -28,3 +28,7 @@ export default withAuth(
     },
   }
 );
+
+export const config = {
+  matcher: ["/((?!api|_next/static|_next/image|logo.png|favicon.ico).*)"],
+};

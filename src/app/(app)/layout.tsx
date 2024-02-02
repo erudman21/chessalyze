@@ -1,36 +1,31 @@
-import "./globals.css";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import AuthSessionProvider from "../../components/AuthSessionProvider";
-import BoardProvider from "../../components/BoardProvider";
+import { getServerSession } from "next-auth";
 import Board from "../../components/Board";
 import NavBar from "../../components/NavBar";
+import { cn } from "../../lib/utils";
 
-const inter = Inter({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "Chessalyze",
-  description: "Test your evaluation skills",
-  icons: {
-    icon: "/favicon.ico",
-  },
-};
-
-export default async function RootLayout({
+export default async function Layout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession();
+
   return (
-    <html lang="en">
-      <head></head>
-      <body
-        className={`${inter.className} bg-background dark text-foreground flex items-stretch h-screen flex-col overflow-y-hidden`}
+    <>
+      {session?.user && <NavBar />}
+      <div
+        className={cn(
+          "flex w-full h-full justify-center",
+          session?.user && "pb-20"
+        )}
       >
-        <AuthSessionProvider>
-          <BoardProvider>{children}</BoardProvider>
-        </AuthSessionProvider>
-      </body>
-    </html>
+        <div className="hidden md:flex items-center w-[max(50%,800px)]">
+          <div className="w-[min(90vh,800px)] px-8 ml-auto">
+            <Board />
+          </div>
+        </div>
+        {children}
+      </div>
+    </>
   );
 }
